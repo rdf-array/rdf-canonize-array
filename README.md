@@ -1,5 +1,9 @@
 # rdf-canonize
 
+> **rdf-array fork.** Branch `rdf-sequences` canonicalizes the sequence terms of
+> [rdf-array](https://github.com/rdf-array/rdf-array): see [doc/rdf-array.md](doc/rdf-array.md).
+
+
 [![Build status](https://img.shields.io/github/actions/workflow/status/digitalbazaar/rdf-canonize/main.yaml)](https://github.com/digitalbazaar/rdf-canonize/actions/workflows/main.yaml)
 [![Coverage status](https://img.shields.io/codecov/c/github/digitalbazaar/rdf-canonize)](https://codecov.io/gh/digitalbazaar/rdf-canonize)
 
