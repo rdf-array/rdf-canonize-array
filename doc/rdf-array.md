@@ -12,4 +12,8 @@ with no sequence canonicalizes exactly as in RDFC-1.0: W3C's rdf-canon suite pas
   [rdf-tests-contrib](https://github.com/rdf-array/rdf-tests-contrib), whose `bin/build-rdfc.js` writes its expectations from
   this fork, under shuffled labels and quad orders; oxigraph-array checks them independently.
 
-Not done: `rdf-canonize-native`, and the browser run (`npm run test-karma`). A sequence has no slots on this branch.
+Branch `rdf-undef` adds the empty slot of a sequence: `undef` in any case as an element, `{termType: 'Undef', value: 'undef'}`,
+written `undef`. The algorithm needs nothing further, since a slot holds no blank node and is spelled in the sequence like any
+term, and it counts as an element in a position's index path.
+
+Not done: `rdf-canonize-native`, and the browser run (`npm run test-karma`).

@@ -73,4 +73,46 @@ describe('sequences', () => {
         `_:c14n1 ${P} _:c14n0 .\n`);
     });
   });
+
+  describe('slots', () => {
+    it('reads undef in any case, as an element only', async () => {
+      const [{object}] = NQuads.parse(
+        `${S} ${P} (UNDEF undef "a" (Undef)) .\n`);
+      assert.deepStrictEqual(
+        object.elements.map(element => element.termType),
+        ['Undef', 'Undef', 'Literal', 'Sequence']);
+      assert.strictEqual(object.value, '(undef undef "a" (undef))');
+    });
+    it('still reads a literal or a prefix-like IRI spelled undef', async () => {
+      const [{object}] = NQuads.parse(`${S} ${P} ("undef" <undef:x>) .\n`);
+      assert.deepStrictEqual(
+        object.elements.map(element => element.termType),
+        ['Literal', 'NamedNode']);
+    });
+    for(const bad of [
+      `${S} ${P} undef .`, `undef ${P} "a" .`, `${S} undef ("a") .`,
+      `${S} ${P} ("a") undef .`, `${S} ${P} (undefined) .`
+    ]) {
+      it(`refuses ${bad}`, async () => {
+        assert.throws(
+          () => NQuads.parse(`${bad}\n`), /N-Quads parse error on line 1/);
+      });
+    }
+    it('tells a slot from a shorter sequence', async () => {
+      const canonical = async object => canonize(
+        NQuads.parse(`${S} ${P} ${object} .\n`), options);
+      assert.notStrictEqual(
+        await canonical('(_:x undef)'), await canonical('(_:x)'));
+      assert.strictEqual(
+        await canonical('(undef _:x)'), `${S} ${P} (undef _:c14n0) .\n`);
+    });
+    it('counts slots in a position', async () => {
+      const deep = {...options, maxWorkFactor: Infinity};
+      const rows = ['(_:x undef _:y)', '(_:y undef _:x)']
+        .map(row => `${S} ${P} ${row} .\n`);
+      assert.strictEqual(
+        await canonize(NQuads.parse(rows.join('')), deep),
+        await canonize(NQuads.parse(rows.reverse().join('')), deep));
+    });
+  });
 });
